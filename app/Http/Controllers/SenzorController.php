@@ -87,5 +87,36 @@ class SenzorController extends Controller
         }
     }
 
+    public function getNis()
+    {
+        try {
+            $ATVSSOdsekNis = OutdoorSensor::getLastEntry('16160069');
+
+            // Ovde pretpostavljam da ces napraviti metodu procenti() u OutdoorSensor modelu ili nekom servisu
+            $poruka = "Михајло Цекић";
+
+            return response()->json([
+                $ATVSSOdsekNis
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Došlo je do greške pri dobijanju poslednjeg unosa.'
+            ], 500);
+        }
+    }
+
+    public function inDoorStore(Request $request)
+    {
+        // Dobavljanje svih podataka iz zahteva
+        $data = $request->all();
+
+        // Logovanje podataka u JSON formatu
+        Log::info($data);
+
+        // Opcionalno: vraćanje odgovora
+        return response()->json(['status' => 'Podaci su uspešno zabeleženi.']);
+    }
+
 
 }

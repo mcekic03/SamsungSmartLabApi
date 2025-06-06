@@ -40,9 +40,9 @@ class OutdoorSensor extends Model
         }
 
         // Konvertovanje timestamp u lokalno vreme (Beograd)
+        // Samo formatuj bez konverzije
         $timestampLocal = Carbon::parse($row->timestamp)
-            ->timezone('Europe/Belgrade')
-            ->format('Y-m-d H:i:s');
+        ->format('Y-m-d H:i:s');
 
         // Određivanje lokacije po id-u
         $locations = [

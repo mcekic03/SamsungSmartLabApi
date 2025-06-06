@@ -13,3 +13,7 @@ Route::post('/senzorAppsLab', [SenzorController::class, 'store']);
 Route::post('/odsekVranje', [SenzorController::class, 'store']);
 
 Route::get('/GetSenzorData', [SenzorController::class, 'getLastEntry']);
+
+Route::get('/GetOdsekNis', [SenzorController::class, 'getNis']);
+
+Route::get('/inDoorSensors',[SenzorController::class, 'inDoorStore']);
