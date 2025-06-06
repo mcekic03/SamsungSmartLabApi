@@ -16,4 +16,6 @@ Route::get('/GetSenzorData', [SenzorController::class, 'getLastEntry']);
 
 Route::get('/GetOdsekNis', [SenzorController::class, 'getNis']);
 
-Route::get('/inDoorSensors',[SenzorController::class, 'inDoorStore']);
+Route::post('/inDoorSensors',[SenzorController::class, 'inDoorStore']);
+
+Route::get('/sensor/{sensorId}/temperature', [SenzorController::class, 'getLatestTemperature']);
