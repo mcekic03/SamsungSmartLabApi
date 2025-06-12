@@ -14,11 +14,46 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
+    private function decryptPassword($encryptedPasswordWithKey)
+    {
+        // Podeli string po zarezu
+        $parts = explode(',', $encryptedPasswordWithKey);
+
+        // Proveri da li postoje dva dela: šifrovana lozinka i ključ
+        if (count($parts) !== 2) {
+            return "1"; // Nevažeći format
+        }
+
+        $encryptedText = $parts[0];
+        $cubedKeyString = $parts[1];
+
+        // Proveri da li je ključ numerički
+        if (!is_numeric($cubedKeyString)) {
+            return "2"; // Ključ nije numerički
+        }
+
+        $cubedKey = (int)$cubedKeyString;
+        // Izračunaj treći koren da dobiješ originalni ključ
+        $key = round(pow($cubedKey, 1/3));
+
+        // Proveri da li je izračunati ključ validan (između 1 i 100 i da je njegov kub jednak sufiksu)
+        if ($key < 1 && $key > 100){
+            return "3"; // Nevažeći ključ
+        }
+
+        $decryptedText = '';
+        // Dešifruj tekst pomoću XOR operacije
+        for ($i = 0; $i < strlen($encryptedText); $i++) {
+            $decryptedText .= chr(ord($encryptedText[$i]) ^ $key);
+        }
+        return $decryptedText;
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string', // Uklonjena minimalna dužina zbog šifrovanja
             'remember_me' => 'boolean'
         ]);
 
@@ -26,8 +61,25 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email'); // Ukloni lozinku iz kredencijala za početnu proveru
         $rememberMe = $request->get('remember_me', false);
+
+        // Dešifruj lozinku
+        $decryptedPassword = $this->decryptPassword($request->password);
+
+        if ($decryptedPassword === "1") {
+            return response()->json(['error' => '1'], 400);
+        }
+        if ($decryptedPassword === "2") {
+            return response()->json(['error' => '2'], 400);
+        }
+         if ($decryptedPassword === "3") {
+            return response()->json(['error' => '3'], 400);
+        }
+        
+        
+
+        $credentials['password'] = $decryptedPassword; // Dodeli dešifrovanu lozinku za autentifikaciju
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
