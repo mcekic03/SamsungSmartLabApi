@@ -185,6 +185,8 @@ class AuthController extends Controller
                 'last_name' => $user->LastName,
                 'email' => $user->email,
                 'role' => $user->role,
+                'devices' => $user->devices()->get(), // Dodato
+       
             ]);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Token nije valjan'], 401);
