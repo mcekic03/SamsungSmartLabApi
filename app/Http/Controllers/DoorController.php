@@ -69,5 +69,47 @@ class DoorController extends Controller
             'details' => $response->body()
         ], $response->status());
     }
+
+    public function recentDoorUnlock()
+    {
+        $logs = \App\Models\DeviceUnlockLog::with('user')
+            ->orderBy('unlocked_at', 'desc')
+            ->get()
+            ->map(function($log) {
+                return [
+                    'first_name' => $log->user->FirstName,
+                    'last_name'  => $log->user->LastName,
+                    'email'      => $log->user->email,
+                    'unlocked_at'=> $log->unlocked_at,
+                ];
+            });
+
+        return response()->json($logs);
+    }
+
+    public function userDoorUnlocks($userId, Request $request)
+    {
+        $authUser = auth('api')->user();
+        // Ako nije admin, može da vidi samo svoju istoriju
+        if ($authUser->role !== 'admin' && $authUser->id != $userId) {
+            return response()->json(['error' => 'Nemate dozvolu za pristup.'], 403);
+        }
+
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = \App\Models\DeviceUnlockLog::where('user_id', $userId);
+
+        if ($from) {
+            $query->where('unlocked_at', '>=', $from);
+        }
+        if ($to) {
+            $query->where('unlocked_at', '<=', $to);
+        }
+
+        $logs = $query->orderBy('unlocked_at', 'desc')->pluck('unlocked_at');
+
+        return response()->json($logs);
+    }
 }
 

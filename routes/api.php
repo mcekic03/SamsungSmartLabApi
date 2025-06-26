@@ -23,9 +23,11 @@ Route::group(['prefix' => 'auth'], function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('user/{id}/devices', [UserDeviceController::class, 'getUserDevices']);
     Route::post('/openDoor', [DoorController::class, 'open']);
+    Route::get('user/{user}/door-unlocks', [DoorController::class, 'userDoorUnlocks']);
 });
 
 Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::post('user/{user}/assign-device/{device}', [UserDeviceController::class, 'assignDevice']);
     Route::delete('user/{user}/remove-device/{device}', [UserDeviceController::class, 'removeDevice']);
+    Route::get('/recentDoorUnlock', [DoorController::class, 'recentDoorUnlock']);
 });
