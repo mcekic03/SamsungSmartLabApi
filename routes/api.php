@@ -3,6 +3,7 @@
 use App\Http\Controllers\DoorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDeviceController;
+// use App\Http\Controllers\DeviceController; // Uklonjeno jer ne postoji
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,5 +23,9 @@ Route::group(['prefix' => 'auth'], function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('user/{id}/devices', [UserDeviceController::class, 'getUserDevices']);
     Route::post('/openDoor', [DoorController::class, 'open']);
-    Route::middleware(['auth:api', 'isAdmin'])->get('/devices-with-users', [DeviceController::class, 'getDevicesWithUsers']);
+});
+
+Route::middleware(['auth:api', 'isAdmin'])->group(function () {
+    Route::post('user/{user}/assign-device/{device}', [UserDeviceController::class, 'assignDevice']);
+    Route::delete('user/{user}/remove-device/{device}', [UserDeviceController::class, 'removeDevice']);
 });
