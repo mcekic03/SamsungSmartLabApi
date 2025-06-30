@@ -70,10 +70,21 @@ class DoorController extends Controller
         ], $response->status());
     }
 
-    public function recentDoorUnlock()
+    public function recentDoorUnlock(Request $request)
     {
-        $logs = \App\Models\DeviceUnlockLog::with('user')
-            ->orderBy('unlocked_at', 'desc')
+        $from = $request->query('from');
+        $to = $request->query('to');
+
+        $query = \App\Models\DeviceUnlockLog::with('user');
+
+        if ($from) {
+            $query->where('unlocked_at', '>=', $from);
+        }
+        if ($to) {
+            $query->where('unlocked_at', '<=', $to);
+        }
+
+        $logs = $query->orderBy('unlocked_at', 'desc')
             ->get()
             ->map(function($log) {
                 return [
