@@ -33,45 +33,33 @@ class Tuya
         $response = Http::withHeaders($headers)
             ->get('https://openapi.tuyaeu.com/v1.0/token?grant_type=1');
         
-        return $response->json();
+        $json = $response->json();
+        $json['sign'] = $sign;
+        return $json;
     }
 
-    public static function getCachedToken()
-    {
-        $tokenData = Cache::get('tuya_token');
-        if ($tokenData && isset($tokenData['expire_time']) && $tokenData['expire_time'] > time()) {
-            return $tokenData['access_token'];
-        }
-
-        $response = self::getTokenSimple();
-        if (isset($response['result']['access_token'])) {
-            $expire = $response['result']['expire_time']; // u sekundama
-            $tokenData = [
-                'access_token' => $response['result']['access_token'],
-                'expire_time' => time() + $expire - 60, // 60 sekundi ranije za svaki slučaj
-            ];
-            Cache::put('tuya_token', $tokenData, $expire - 60);
-            return $tokenData['access_token'];
-        }
-
-        return null; // ili baci exception
-    }
 
     public static function controlDevice($deviceId, $body)
     {
-        $accessToken = self::getCachedToken();
+        $resp = \App\Tuya::getTokenSimple();
+        $accessToken = $resp['result']['access_token'];
+        $sign = $resp['sign'];
+        $t = $resp['t'];
         $clientId = 'jjavkaktjpjv7qycft4d';
-        $t = round(microtime(true) * 1000);
-        $headers = [
-            'client_id' => $clientId,
-            'access_token' => $accessToken,
-            't' => $t,
-            'sign_method' => 'HMAC-SHA256',
-            'Content-Type' => 'application/json',
+       $headers = [
+            'sign_method'   => 'HMAC-SHA256',
+            'client_id'     => $clientId,
+            't'             => $t,
+            'mode'          => 'cors',
+            'Content-Type'  => 'application/json',
+            'sign'          => $sign,         // generisan sign string
+            'access_token'  => $accessToken,  // tvoj access token
         ];
         $url = "https://openapi.tuyaeu.com/v1.0/devices/{$deviceId}/commands";
-        $response = \Illuminate\Support\Facades\Http::withHeaders($headers)
-            ->post($url, $body);
+        $response = Http::withHeaders($headers)->post($url, $body);
         return $response->json();
     }
+
+
+
 } 
