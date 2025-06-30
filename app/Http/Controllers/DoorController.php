@@ -91,6 +91,7 @@ class DoorController extends Controller
                     'first_name' => $log->user->FirstName,
                     'last_name'  => $log->user->LastName,
                     'email'      => $log->user->email,
+                    'role'       => $log->user->role,
                     'unlocked_at'=> $log->unlocked_at,
                 ];
             });
