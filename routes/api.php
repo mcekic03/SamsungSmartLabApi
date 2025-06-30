@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TuyaController;
+use App\Http\Controllers\AcController;
 // use App\Http\Controllers\DeviceController; // Uklonjeno jer ne postoji
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user/{id}/devices', [UserDeviceController::class, 'getUserDevices']);
     Route::post('/openDoor', [DoorController::class, 'open']);
     Route::get('user/{user}/door-unlocks', [DoorController::class, 'userDoorUnlocks']);
+    Route::post('ac/on', [AcController::class, 'turnOn']);
+    Route::post('ac/off', [AcController::class, 'turnOff']);
 });
 
 Route::middleware(['auth:api', 'isAdmin'])->group(function () {
