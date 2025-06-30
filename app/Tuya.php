@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class Tuya
 {
@@ -33,5 +34,26 @@ class Tuya
             ->get('https://openapi.tuyaeu.com/v1.0/token?grant_type=1');
         
         return $response->json();
+    }
+
+    public static function getCachedToken()
+    {
+        $tokenData = Cache::get('tuya_token');
+        if ($tokenData && isset($tokenData['expire_time']) && $tokenData['expire_time'] > time()) {
+            return $tokenData['access_token'];
+        }
+
+        $response = self::getTokenSimple();
+        if (isset($response['result']['access_token'])) {
+            $expire = $response['result']['expire_time']; // u sekundama
+            $tokenData = [
+                'access_token' => $response['result']['access_token'],
+                'expire_time' => time() + $expire - 60, // 60 sekundi ranije za svaki slučaj
+            ];
+            Cache::put('tuya_token', $tokenData, $expire - 60);
+            return $tokenData['access_token'];
+        }
+
+        return null; // ili baci exception
     }
 } 

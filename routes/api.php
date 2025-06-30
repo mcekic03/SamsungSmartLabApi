@@ -5,7 +5,7 @@ use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TuyaController;
 use App\Http\Controllers\AcController;
-// use App\Http\Controllers\DeviceController; // Uklonjeno jer ne postoji
+use App\Http\Controllers\DeviceController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,4 +36,5 @@ Route::middleware(['auth:api', 'isAdmin'])->group(function () {
     Route::delete('user/{user}/remove-device/{device}', [UserDeviceController::class, 'removeDevice']);
     Route::get('/recentDoorUnlock', [DoorController::class, 'recentDoorUnlock']);
     Route::get('/allUsers', [UserController::class, 'allUsers']);
+    Route::get('/allDevices', [DeviceController::class, 'allDevices']);
 });
