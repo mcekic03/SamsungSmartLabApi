@@ -56,4 +56,22 @@ class Tuya
 
         return null; // ili baci exception
     }
+
+    public static function controlDevice($deviceId, $body)
+    {
+        $accessToken = self::getCachedToken();
+        $clientId = 'jjavkaktjpjv7qycft4d';
+        $t = round(microtime(true) * 1000);
+        $headers = [
+            'client_id' => $clientId,
+            'access_token' => $accessToken,
+            't' => $t,
+            'sign_method' => 'HMAC-SHA256',
+            'Content-Type' => 'application/json',
+        ];
+        $url = "https://openapi.tuyaeu.com/v1.0/devices/{$deviceId}/commands";
+        $response = \Illuminate\Support\Facades\Http::withHeaders($headers)
+            ->post($url, $body);
+        return $response->json();
+    }
 } 
