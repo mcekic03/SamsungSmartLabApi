@@ -1,26 +1,53 @@
-*.log
-.DS_Store
+# Laravel .env fajlovi
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+
+# OS fajlovi
+.DS_Store
+Thumbs.db
+
+# IDE folderi
+.idea/
+.vscode/
+.fleet/
 .phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
+
+# Composer
+vendor/
+auth.json
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Laravel buildovi
+/public/build/
 /public/hot
 /public/storage
+/public/mix-manifest.json
+
+# Laravel cache i storage
 /storage/*.key
-/storage/pail
-/vendor
+/storage/pail/
+/storage/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/debugbar/*
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache
+/.phpunit.cache
+
+# JetBrains i Nova
+/.nova
+/.zed
+
+# Homestead
 Homestead.json
 Homestead.yaml
-npm-debug.log
-Thumbs.db
-yarn-error.log
