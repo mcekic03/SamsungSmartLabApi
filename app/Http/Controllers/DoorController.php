@@ -38,7 +38,7 @@ class DoorController extends Controller
         }
 
         // Pošalji POST zahtev ka drugom serveru za otvaranje brave
-        $response = Http::post('http://160.99.40.144:3500/execute', [
+        $response = Http::post('http://160.99.40.144:' . env('REMOTE_SERVER_PORT', '3500') . '/execute', [
             'command' => 'run_function'
         ]);
 

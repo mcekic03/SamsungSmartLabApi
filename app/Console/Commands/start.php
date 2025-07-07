@@ -25,6 +25,6 @@ class start extends Command
      */
     public function handle()
     {
-        $this->call('serve',['--host'=>'0.0.0.0','--port'=>'3500']);
+        $this->call('serve',['--host'=>'0.0.0.0','--port'=>env('APP_PORT', '3500')]);
     }
 }
