@@ -8,8 +8,7 @@ use App\Http\Controllers\AcController;
 use App\Http\Controllers\DeviceController;
 use Illuminate\Support\Facades\Route;
 
-
-
+Route::post('/light-post', [DeviceController::class, 'lightPostStatus']);
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);

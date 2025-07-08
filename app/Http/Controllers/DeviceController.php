@@ -92,4 +92,28 @@ class DeviceController extends Controller
         }
         return response()->json($response);
     }
+
+    // POST /api/light-post - prima status svetala i ažurira bazu
+    public function lightPostStatus(Request $request)
+    {
+        $data = $request->json()->all();
+        // Pronađi sve uređaje tipa 'light'
+        $devices = Device::where('type', 'light')->get();
+        foreach ($devices as $device) {
+            $imaUpaljenih = false;
+            foreach ($device->lightGroups as $group) {
+                $relayKey = 'relay' . $group->group_index;
+                if (isset($data[$relayKey])) {
+                    $group->status = ($data[$relayKey] === 'ON') ? 'on' : 'off';
+                    $group->save();
+                    if ($data[$relayKey] === 'ON') {
+                        $imaUpaljenih = true;
+                    }
+                }
+            }
+            $device->status = $imaUpaljenih ? 'on' : 'off';
+            $device->save();
+        }
+        return response()->json(['message' => 'Status svetala uspešno ažuriran.']);
+    }
 } 
