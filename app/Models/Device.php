@@ -20,4 +20,9 @@ class Device extends Model
     return $this->hasMany(DeviceUnlockLog::class);
 }
 
+    public function lightGroups()
+    {
+        return $this->hasMany(LightGroup::class);
+    }
+
 }
