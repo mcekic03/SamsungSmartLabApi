@@ -29,6 +29,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user/{user}/door-unlocks', [DoorController::class, 'userDoorUnlocks']);
     Route::post('ac/on', [AcController::class, 'turnOn']);
     Route::post('ac/off', [AcController::class, 'turnOff']);
+    Route::post('/device/{device}/lights/on', [DeviceController::class, 'upaliSveSvetla']);
+    Route::post('/device/{device}/lights/off', [DeviceController::class, 'ugasiSveSvetla']);
+    Route::post('/device/{device}/lights/toggle/{groupIndex}', [DeviceController::class, 'toggleSvetloPoGrupi']);
+    Route::get('/device/{device}/lights/status', [DeviceController::class, 'statusSvetala']);
 });
 
 Route::middleware(['auth:api', 'isAdmin'])->group(function () {
