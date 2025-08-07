@@ -3,8 +3,6 @@ use App\Http\Controllers\DoorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\TuyaController;
-use App\Http\Controllers\AcController;
 use App\Http\Controllers\DeviceController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +12,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('refresh', [AuthController::class, 'refreshToken']);
-    Route::get('/tuya/token', [TuyaController::class, 'getTokenSimple']);
     
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('logout', [AuthController::class, 'logout']);
@@ -26,8 +23,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user/{id}/devices', [UserDeviceController::class, 'getUserDevices']);
     Route::post('/openDoor', [DoorController::class, 'open']);
     Route::get('user/{user}/door-unlocks', [DoorController::class, 'userDoorUnlocks']);
-    Route::post('ac/on', [AcController::class, 'turnOn']);
-    Route::post('ac/off', [AcController::class, 'turnOff']);
     Route::post('/device/{device}/lights/on', [DeviceController::class, 'upaliSveSvetla']);
     Route::post('/device/{device}/lights/off', [DeviceController::class, 'ugasiSveSvetla']);
     Route::post('/device/{device}/lights/toggle/{groupIndex}', [DeviceController::class, 'toggleSvetloPoGrupi']);
